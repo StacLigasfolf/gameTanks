@@ -2,6 +2,7 @@
 
 namespace Game
 {
+
     class Items
     {
         public int armor;
@@ -9,98 +10,155 @@ namespace Game
         public int bullet;
         public double domage;
 
-        public Items(int armor, double health, int bullet, double domage)
+
+        public Items(int arm, double heal, int bull, double dom)
         {
-            this.armor = armor;
-            this.health = health;
-            this.bullet = bullet;
-            this.domage = domage;
+            armor = arm;
+            health = heal;
+            bullet = bull;
+            domage = dom;
+        }
+
+        public void PrintInfo(Items personal, Items enemy)
+        {
+            Console.WriteLine($"ЗДОРОВЬЕ: {personal.health}");
+            Console.WriteLine("ВЫСТРЕЛ!!!");
+            Console.WriteLine("/////////////////////////////////");
+            Console.WriteLine($"БРОНЯ ПРОТИВНИКА: {personal.armor}");
+            Console.WriteLine($"УРОН: {personal.domage}");
+            Console.WriteLine($"ПАТРОНЫ: {personal.bullet}");
         }
 
         /* Функция регистрации урона и изменения ЗДОРОВЬЯ, ПАТРОНОВ, УРОНА
          Дублирующиеся (Console.WriteLine) чисто для красоты и удобства пользователя*/
-        public void Shooting(int bullet, double domage)
+        public void Shooting(Items personal, Items enemy, Random random)
         {
-            // Диапазон вероятности промаха
-            Random rndprobability = new Random();
-            int probability = rndprobability.Next(0, 101);
-            // Диапазон вероятности критического урона
-            Random randDomage = new Random();
-            int probabilityDomage = randDomage.Next(0, 101);
+            // Диапазон вероятности промаха 
+            int probability = random.Next(0, 101);
 
             if (probability >= 80)
             {
-                Console.WriteLine("ВЫ ПРОМАХНУЛИСЬ");
-                this.bullet -= 1;
-                Console.WriteLine($"ПАТРОНЫ: {this.bullet}");
+                personal.bullet -= 1;
+                Console.WriteLine("ПРОМАХ!!!");
+                PrintInfo(personal, enemy);
             }
-            // Условие вероятности критического урона
-            else if (probabilityDomage >= 90)
+            // Условие вероятности критического урона 
+            else if (probability >= 90)
             {
-                this.bullet -= 1;
-                this.health = this.health - this.domage + this.armor;
-                this.domage += this.domage * 0.2;
+                personal.bullet -= 1;
+                enemy.health = enemy.health - personal.domage + personal.armor;
+                personal.domage += personal.domage * 0.2;
 
-                Console.WriteLine("*******************************************************************");
-                if (this.armor < 7)
+                if (enemy.armor < 7)
                 {
-                    this.armor += 1;
+                    enemy.armor += 1;
                 }
-                Console.WriteLine("Броня противника: " + this.armor);
-                Console.WriteLine($"КРИТИЧЕСКИЙ УРОН: {this.domage}");
-                Console.WriteLine($"Ваш УРОН теперь: {this.domage}");
-                Console.WriteLine($"У оппонента {this.health}hp");
-                Console.WriteLine($"ПАТРОНЫ: {this.bullet}");
+
+                Console.WriteLine($"КРИТИЧЕСКИЙ УРОН: + {personal.domage}");
+                PrintInfo(personal, enemy);
             }
-            else if (this.bullet == 0)
+            else if (personal.bullet == 0)
             {
                 Console.WriteLine("У ВАС НЕТ БОЕПРИПАСОВ!!!");
+                PrintInfo(personal, enemy);
             }
             else
             {
-                this.bullet -= 1;
-                this.health = this.health - domage + this.armor;
-                Console.WriteLine("*******************************************************************");
-                if (this.armor < 7)
+                personal.bullet -= 1;
+                enemy.health = enemy.health - enemy.domage + enemy.armor;
+
+                if (enemy.armor < 7)
                 {
-                    this.armor += 1;
+                    enemy.armor += 1;
                 }
-                Console.WriteLine("Броня противника: " + this.armor);
-                Console.WriteLine($"Урон: {domage}");
-                Console.WriteLine($"У оппонента {this.health}hp");
-                Console.WriteLine($"ПАТРОНЫ: {this.bullet}");
+                PrintInfo(personal, enemy);
             }
+
         }
 
         /* Функция лечения принимающая случайное количество hp и прибовляет его к текущему
         Так-же установлен предел для значения health в 100 */
-        public void Mending(double health, int hp)
+        public void Mending(Items personal,Items enemy, int hp)
         {
-            if (this.health + hp > 100)
+            if (personal.health + hp > 100)
             {
-                this.health = 100;
-                Console.WriteLine($"Вылечился до {this.health} hp");
+                personal.health = 100;
+                Console.WriteLine($"Вылечился до {personal.health} hp");
+                PrintInfo(personal, enemy);
             }
             else
             {
-                this.health = health + hp;
-                Console.WriteLine($"Вылечился до {this.health} hp");
+                personal.health = personal.health + hp;
+                Console.WriteLine($"Вылечился до {personal.health} hp");
+                PrintInfo(personal, enemy);
             }
         }
 
         /* Функция покупки патронов, прибовляет у текущему значению случайное в определенном диапазоне*/
-        public void ByBullet(int bullet)
+        public void ByBullet(int addBullet, Items personal, Items enemy)
         {
-            this.bullet += bullet;
-            Console.WriteLine($"куплено {bullet} боеприпасов, ОБЩЕЕ КОЛИЧЕСТВО: {this.bullet} ");
+            personal.bullet += addBullet;
+            Console.WriteLine($"куплено {addBullet} боеприпасов");
+            PrintInfo(personal, enemy);
         }
+
+        // Human
+        public void StepHuman(Items tank, Items robot, int step, Random random)
+        {
+            Console.WriteLine("\n**************************** ХОД ТАНКА ****************************\n");
+            // Выстрел
+            if (step == 1)
+            {
+                tank.Shooting(tank, robot, random);
+            }
+            // Лечение
+            else if (step == 2)
+            {
+                int hp = random.Next(5, 10);
+                tank.Mending(tank, robot, hp);
+            }
+            // Покупка припасов
+            else if (step == 3)
+            {
+                int bullets = random.Next(1, 4);
+                tank.ByBullet(bullets, tank, robot);
+            }
+        }
+
+        // Robot
+        public void StepRobot(Items tank, Items robot, Random random)
+        {
+            Console.WriteLine("\n**************************** ХОД РОБОТА ***************************\n");
+            int choosed = random.Next(1, 4);
+            // Выстрел противника 
+            if (choosed == 1)
+            {
+                robot.Shooting(robot, tank, random);
+            }
+            // Лечение противника 
+            else if (choosed == 2)
+            {
+                int hp = random.Next(5, 18);
+                robot.Mending(robot, tank, hp);
+            }
+            // Покупка припасов противника 
+            else if (choosed == 3)
+            {
+                int bullets = random.Next(1, 4);
+                tank.ByBullet(bullets, robot, tank);
+            }
+            Console.WriteLine("\n*******************************************************************\n");
+        }
+
 
         class Program
         {
             public static void Main(string[] args)
             {
-                Items tank = new Items(4, 100, 10, 15);
-                Items robot = new Items(4, 100, 10, 15);
+                Items tank = new(4, 100, 10, 20);
+                Items robot = new(4, 100, 10, 20);
+                Random random = new();
+
                 bool move = true;
                 // Основной цикл игры 
                 while (true)
@@ -122,65 +180,23 @@ namespace Game
                         switch (move)
                         {   // true - ход человека
                             case true:
-                                Console.WriteLine("\n**************************** ХОД ТАНКА ****************************\n");
+
                                 Console.WriteLine("1. Огонь \n2. Ремонт\n3. Купить патроны");
-                                int user = Convert.ToInt32(Console.ReadLine());
-                                // Выстрел
-                                if (user == 1)
-                                {
-                                    Console.WriteLine($"ЗДОРОВЬЕ: {tank.health}");
-                                    robot.Shooting(tank.bullet, robot.domage);
-                                }
-                                // Лечение
-                                else if (user == 2)
-                                {
-                                    Random appHeals = new Random();
-                                    int hp = appHeals.Next(5, 18);
-                                    tank.Mending(tank.health, hp);
-                                }
-                                // Покупка припасов
-                                else if (user == 3)
-                                {
-                                    Random bul = new Random();
-                                    int bullet = bul.Next(1, 4);
-                                    robot.ByBullet(bullet);
-                                }
-                                Console.WriteLine("\n************************ ХОД ТАНКА ЗАКОНЧЕН ***********************\n");
+                                int step = Convert.ToInt32(Console.ReadLine());
+                                tank.StepHuman(tank, robot, step, random);
                                 move = !move;
                                 break;
+
                             // false - ход робота
                             case false:
-                                Console.WriteLine("\n**************************** ХОД РОБОТА ***************************\n");
-                                Random choose = new Random();
-                                int choosed = choose.Next(1, 4);
-                                // Выстрел противника
-                                if (choosed == 1)
-                                {
-                                    Console.WriteLine($"HP: {robot.health}");
-                                    tank.Shooting(robot.bullet, tank.domage);
-                                }
-                                // Лечение противника
-                                else if (choosed == 2)
-                                {
-                                    Random appHeals = new Random();
-                                    int hp = appHeals.Next(5, 18);
-                                    robot.Mending(robot.health, hp);
-                                }
-                                // Покупка припасов противника
-                                else if (choosed == 3)
-                                {
-                                    Random bul = new Random();
-                                    int bullet = bul.Next(1, 4);
-                                    tank.ByBullet(bullet);
-                                }
-                                Console.WriteLine("\n************************ ХОД РОБОТА ЗАКОНЧЕН **********************\n");
+                                robot.StepRobot(tank, robot, random);
                                 move = true;
                                 break;
                         }
                     }
                     catch (System.FormatException)
                     {
-                        Console.WriteLine("ПОЖАЛУЙСТА ИСПОЛЬЗУЙТЕ ТОЛЬКО ЗНАЧЕНИЯ ИЗ ПРЕДЛОЖЕННЫХ!!!!");
+                        Console.WriteLine("ПОЖАЛУЙСТА ВЫБЕРИТЕ ПРАВИЛЬНОЕ ДЕЙСТВИЕ !!!");
                     }
 
 
