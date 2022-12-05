@@ -22,7 +22,6 @@ namespace Game
         public void PrintInfo(Items personal, Items enemy)
         {
             Console.WriteLine($"ЗДОРОВЬЕ: {personal.health}");
-            Console.WriteLine("ВЫСТРЕЛ!!!");
             Console.WriteLine("/////////////////////////////////");
             Console.WriteLine($"БРОНЯ ПРОТИВНИКА: {personal.armor}");
             Console.WriteLine($"УРОН: {personal.domage}");
@@ -33,6 +32,7 @@ namespace Game
          Дублирующиеся (Console.WriteLine) чисто для красоты и удобства пользователя*/
         public void Shooting(Items personal, Items enemy, Random random)
         {
+            Console.WriteLine("ВЫСТРЕЛ!!!");
             // Диапазон вероятности промаха 
             int probability = random.Next(0, 101);
 
@@ -102,54 +102,22 @@ namespace Game
             PrintInfo(personal, enemy);
         }
 
-        // Human
-        public void StepHuman(Items tank, Items robot, int step, Random random)
+        // Функция хода
+        public void Steps(Items personal, Items enemy, int step, Random random)
         {
-            Console.WriteLine("\n**************************** ХОД ТАНКА ****************************\n");
-            // Выстрел
-            if (step == 1)
+            if(step == 1)
             {
-                tank.Shooting(tank, robot, random);
-            }
-            // Лечение
-            else if (step == 2)
+                personal.Shooting(personal, enemy, random);
+            }else if(step == 2) 
             {
                 int hp = random.Next(5, 10);
-                tank.Mending(tank, robot, hp);
-            }
-            // Покупка припасов
-            else if (step == 3)
+                personal.Mending(personal, enemy, hp);
+            }else if(step == 3)
             {
                 int bullets = random.Next(1, 4);
-                tank.ByBullet(bullets, tank, robot);
+                personal.ByBullet(bullets, personal, enemy);
             }
         }
-
-        // Robot
-        public void StepRobot(Items tank, Items robot, Random random)
-        {
-            Console.WriteLine("\n**************************** ХОД РОБОТА ***************************\n");
-            int choosed = random.Next(1, 4);
-            // Выстрел противника 
-            if (choosed == 1)
-            {
-                robot.Shooting(robot, tank, random);
-            }
-            // Лечение противника 
-            else if (choosed == 2)
-            {
-                int hp = random.Next(5, 18);
-                robot.Mending(robot, tank, hp);
-            }
-            // Покупка припасов противника 
-            else if (choosed == 3)
-            {
-                int bullets = random.Next(1, 4);
-                tank.ByBullet(bullets, robot, tank);
-            }
-            Console.WriteLine("\n*******************************************************************\n");
-        }
-
 
         class Program
         {
@@ -178,18 +146,21 @@ namespace Game
                     try
                     {
                         switch (move)
-                        {   // true - ход человека
+                        {   
                             case true:
 
+                                Console.WriteLine("***************************** ТАНК *****************************");
                                 Console.WriteLine("1. Огонь \n2. Ремонт\n3. Купить патроны");
                                 int step = Convert.ToInt32(Console.ReadLine());
-                                tank.StepHuman(tank, robot, step, random);
+                                tank.Steps(tank, robot, step, random);
                                 move = !move;
                                 break;
 
-                            // false - ход робота
                             case false:
-                                robot.StepRobot(tank, robot, random);
+
+                                Console.WriteLine("***************************** РОБОТ *****************************");
+                                int steps = random.Next(1, 4);
+                                robot.Steps(robot, tank, steps, random);
                                 move = true;
                                 break;
                         }
