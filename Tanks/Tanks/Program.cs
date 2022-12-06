@@ -48,27 +48,25 @@ namespace Game
         public void Shooting(Items personal, Items enemy, Random random)
         {
             Console.WriteLine("ВЫСТРЕЛ!!!");
-            // Диапазон вероятности промаха 
-
-
-            if (random.Next(0, 101) >= 80 & personal.bullet != 0)
+            if (personal.bullet - 1 < 0)
             {
-                personal.bullet -= 1;
-                Console.WriteLine("ПРОМАХ!!!");
+                Console.WriteLine("У ВАС НЕТ БОЕПРИПАСОВ!!!");
                 PrintInfo(personal);
             }
-            // Условие вероятности критического урона 
+            // Вероятность критического урона 10% 
             else if (random.Next(0, 101) >= 90 & personal.bullet != 0)
             {
                 personal.domage += personal.domage * 0.2;
                 DamageOrginazer(personal, enemy);
-                Console.WriteLine($"КРИТИЧЕСКИЙ УРОН: + {personal.domage}");
+                Console.WriteLine($"КРИТИЧЕСКИЙ УРОН: {personal.domage}");
                 PrintInfo(personal);
                 
             }
-            else if (personal.bullet - 1 < 0)
+            // Вероятность промаха 20%
+            else if (random.Next(0, 101) >= 80 & personal.bullet != 0)
             {
-                Console.WriteLine("У ВАС НЕТ БОЕПРИПАСОВ!!!");
+                personal.bullet -= 1;
+                Console.WriteLine("ПРОМАХ!!!");
                 PrintInfo(personal);
             }
             else
@@ -76,7 +74,6 @@ namespace Game
                 DamageOrginazer(personal, enemy);
                 PrintInfo(personal);
             }
-
         }
 
         /* Функция лечения принимающая случайное количество hp и прибовляет его к текущему
