@@ -36,14 +36,11 @@ namespace Game
         {
             personal.bullet -= 1;
             enemy.health = enemy.health - personal.domage + personal.armor;
-            personal.domage += personal.domage * 0.2;
 
             if (enemy.armor < 7)
             {
                 enemy.armor += 1;
             }
-
-            Console.WriteLine($"КРИТИЧЕСКИЙ УРОН: + {personal.domage}");
         }
 
         /* Функция регистрации урона и изменения ЗДОРОВЬЯ, ПАТРОНОВ, УРОНА
@@ -54,17 +51,20 @@ namespace Game
             // Диапазон вероятности промаха 
 
 
-            if (random.Next(0, 101) >= 80)
+            if (random.Next(0, 101) >= 80 & personal.bullet != 0)
             {
                 personal.bullet -= 1;
                 Console.WriteLine("ПРОМАХ!!!");
                 PrintInfo(personal);
             }
             // Условие вероятности критического урона 
-            else if (random.Next(0, 101) >= 90)
+            else if (random.Next(0, 101) >= 90 & personal.bullet != 0)
             {
+                personal.domage += personal.domage * 0.2;
                 DamageOrginazer(personal, enemy);
+                Console.WriteLine($"КРИТИЧЕСКИЙ УРОН: + {personal.domage}");
                 PrintInfo(personal);
+                
             }
             else if (personal.bullet - 1 < 0)
             {
@@ -73,13 +73,7 @@ namespace Game
             }
             else
             {
-                personal.bullet -= 1;
-                enemy.health = enemy.health - enemy.domage + enemy.armor;
-
-                if (enemy.armor < 7)
-                {
-                    enemy.armor += 1;
-                }
+                DamageOrginazer(personal, enemy);
                 PrintInfo(personal);
             }
 
