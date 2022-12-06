@@ -10,6 +10,7 @@ namespace Game
         public int bullet;
         public double domage;
 
+        // Конструктор
         public Items(int arm, double heal, int bull, double dom)
         {
             armor = arm;
@@ -17,6 +18,8 @@ namespace Game
             bullet = bull;
             domage = dom;
         }
+
+        // Добавить ход для персонажа здесь
         enum UnitStep 
         { 
             human,
@@ -32,6 +35,7 @@ namespace Game
             Console.WriteLine($"ПАТРОНЫ: {personal.bullet}");
         }
 
+        // Регистрация урона и потери патронов
         public void DamageOrginazer(Items personal, Items enemy)
         {
             personal.bullet -= 1;
@@ -43,11 +47,11 @@ namespace Game
             }
         }
 
-        /* Функция регистрации урона и изменения ЗДОРОВЬЯ, ПАТРОНОВ, УРОНА
-         Дублирующиеся (Console.WriteLine) чисто для красоты и удобства пользователя*/
+        /* Функция стрельбы */
         public void Shooting(Items personal, Items enemy, Random random)
         {
             Console.WriteLine("ВЫСТРЕЛ!!!");
+            // Если патроны закончились 
             if (personal.bullet - 1 < 0)
             {
                 Console.WriteLine("У ВАС НЕТ БОЕПРИПАСОВ!!!");
@@ -69,6 +73,7 @@ namespace Game
                 Console.WriteLine("ПРОМАХ!!!");
                 PrintInfo(personal);
             }
+            // Обычный выстрел
             else
             {
                 DamageOrginazer(personal, enemy);
@@ -76,8 +81,7 @@ namespace Game
             }
         }
 
-        /* Функция лечения принимающая случайное количество hp и прибовляет его к текущему
-        Так-же установлен предел для значения health в 100 */
+        /* Функция лечения */
         public void Mending(Items personal, int hp)
         {
             if (personal.health + hp >= 100)
@@ -94,7 +98,7 @@ namespace Game
             }
         }
 
-        /* Функция покупки патронов, прибовляет у текущему значению случайное в определенном диапазоне*/
+        /* Функция покупки патронов*/
         public void ByBullet(int addBullet, Items personal)
         {
             personal.bullet += addBullet;
@@ -131,7 +135,6 @@ namespace Game
                 UnitStep unit = new();
                 Random random = new();
 
-                
                 // Основной цикл игры 
                 while (true)
                 {
@@ -174,12 +177,8 @@ namespace Game
                     {
                         Console.WriteLine("ПОЖАЛУЙСТА ВЫБЕРИТЕ ПРАВИЛЬНОЕ ДЕЙСТВИЕ !!!");
                     }
-
-
                 }
-
             }
-
         }
     }
 }
