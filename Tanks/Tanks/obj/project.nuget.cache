@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EqP2Ol3866X/GnM29IGGHs9vQiS6D0Ov8Q8BLSrx97w+b3d7//uDTvw3cneba17H1pYp3qe40llRoq8av5z2oA==",
+  "dgSpecHash": "KYgtLDs2DJsGFIBrucdxlIQ4LDHtHmQPAqDstZsWQFOB1Kr1sOuGHe0lA57U9J/ZcK0s6nJW5W3n6E4RFGTqnQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\MarkLiman\\Desktop\\C#\\Tanks\\Tanks\\Tanks.csproj",
+  "projectFilePath": "C:\\Users\\User\\Documents\\GitHub\\gameTanks\\Tanks\\Tanks\\Tanks.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
